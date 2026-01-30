@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="WorkoutEntity" representedClassName="WorkoutEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="steps" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="WorkoutStepEntity" inverseName="workout" inverseEntity="WorkoutStepEntity"/>
+    </entity>
+    <entity name="WorkoutStepEntity" representedClassName="WorkoutStepEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="durationSec" attributeType="Integer 32" defaultValueString="60" usesScalarValueType="YES"/>
+        <attribute name="endPct" attributeType="Integer 32" defaultValueString="100" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="intensityPct" attributeType="Integer 32" defaultValueString="100" usesScalarValueType="YES"/>
+        <attribute name="orderIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="repeatCount" attributeType="Integer 32" defaultValueString="3" usesScalarValueType="YES"/>
+        <attribute name="startPct" attributeType="Integer 32" defaultValueString="50" usesScalarValueType="YES"/>
+        <attribute name="type" attributeType="String" defaultValueString="steady"/>
+        <relationship name="children" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="WorkoutStepEntity" inverseName="parent" inverseEntity="WorkoutStepEntity"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkoutStepEntity" inverseName="children" inverseEntity="WorkoutStepEntity"/>
+        <relationship name="workout" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkoutEntity" inverseName="steps" inverseEntity="WorkoutEntity"/>
+    </entity>
+    <entity name="RideEntity" representedClassName="RideEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="avgCadence" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="avgHeartRate" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="avgPower" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="durationSec" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="endedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="ftpUsed" attributeType="Integer 32" defaultValueString="200" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="intensityFactor" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="normalizedPower" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="startedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="status" attributeType="String" defaultValueString="completed"/>
+        <attribute name="tss" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="workoutId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="workoutName" attributeType="String"/>
+        <relationship name="telemetrySamples" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TelemetrySampleEntity" inverseName="ride" inverseEntity="TelemetrySampleEntity"/>
+    </entity>
+    <entity name="TelemetrySampleEntity" representedClassName="TelemetrySampleEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="cadence" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="elapsedSec" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="heartRate" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="power" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="ride" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RideEntity" inverseName="telemetrySamples" inverseEntity="RideEntity"/>
+    </entity>
+    <entity name="PowerRecordEntity" representedClassName="PowerRecordEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="duration" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="power" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="recordedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="rideId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="HRPowerBaselineEntity" representedClassName="HRPowerBaselineEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="avgPower" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="hrPercent" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="sampleCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+</model>

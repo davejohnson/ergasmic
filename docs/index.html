@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERG Workout Builder — Structured ERG Workouts for Smart Trainers</title>
+  <meta name="description" content="Build and run structured ERG workouts on your Tacx Neo or any FTMS smart trainer. Set targets in %FTP, see real-time power, cadence, and heart rate.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #1e1e2a;
+      --text: #e4e4ed;
+      --text-muted: #8888a0;
+      --accent: #4f8cff;
+      --accent-glow: rgba(79, 140, 255, 0.15);
+      --power: #ff6b4a;
+      --hr: #ff4a6b;
+      --cadence: #4affb4;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+    }
+
+    .cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); }
+
+    /* Telemetry strip */
+    .tele-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      padding: 60px 0;
+    }
+
+    .tele-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .tele-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .tele-value {
+      font-size: 40px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .tele-unit { font-size: 16px; font-weight: 500; color: var(--text-muted); }
+    .power-color { color: var(--power); }
+    .hr-color { color: var(--hr); }
+    .cadence-color { color: var(--cadence); }
+    .ftp-color { color: var(--accent); }
+
+    /* Features */
+    .features {
+      padding: 40px 0 80px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .section-heading {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 48px;
+      letter-spacing: -0.02em;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-glow);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* How it works */
+    .steps-section { padding: 40px 0 80px; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      counter-reset: step;
+    }
+
+    .step {
+      text-align: center;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      border-radius: 50%;
+      margin-bottom: 16px;
+    }
+
+    .step h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .step p { font-size: 14px; color: var(--text-muted); }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 60px 0 40px; }
+      .tele-strip { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">iOS App for Smart Trainers</div>
+      <h1>Build. Ride. <span>ERG.</span></h1>
+      <p class="hero-sub">Create structured ERG workouts in %FTP and execute them on any FTMS smart trainer with real-time power, cadence, and heart rate.</p>
+      <div class="cta-group">
+        <a href="#" class="btn btn-primary">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.81-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Coming Soon on the App Store
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="tele-strip">
+      <div class="tele-card">
+        <div class="tele-label">Target Power</div>
+        <div class="tele-value power-color">245 <span class="tele-unit">W</span></div>
+      </div>
+      <div class="tele-card">
+        <div class="tele-label">Heart Rate</div>
+        <div class="tele-value hr-color">152 <span class="tele-unit">bpm</span></div>
+      </div>
+      <div class="tele-card">
+        <div class="tele-label">Cadence</div>
+        <div class="tele-value cadence-color">92 <span class="tele-unit">rpm</span></div>
+      </div>
+      <div class="tele-card">
+        <div class="tele-label">% FTP</div>
+        <div class="tele-value ftp-color">88<span class="tele-unit">%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <div class="section-title">Features</div>
+      <h2 class="section-heading">Everything you need. Nothing you don't.</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">%</div>
+          <h3>%FTP Targets</h3>
+          <p>Build every step in percentage of FTP. Update your FTP once and all workouts adjust automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9876;</div>
+          <h3>Structured Steps</h3>
+          <p>Steady state, ramps, and repeat blocks. Drag to reorder, edit inline, and see total duration at a glance.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9889;</div>
+          <h3>ERG Mode Control</h3>
+          <p>Connects via Bluetooth FTMS to control your trainer in ERG mode. Targets update at 1 Hz for smooth ramps.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9829;</div>
+          <h3>Live Telemetry</h3>
+          <p>Real-time target watts, actual watts, cadence, and heart rate. Step timer, next step preview, and progress bar.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#8634;</div>
+          <h3>Auto-Reconnect</h3>
+          <p>Trainer drops out mid-ride? Auto-pause and reconnect. Resume right where you left off.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9744;</div>
+          <h3>Offline & Private</h3>
+          <p>No account required. All data stays on your device. Works without an internet connection.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-section">
+    <div class="container">
+      <div class="section-title">How It Works</div>
+      <h2 class="section-heading">Three steps to structured training</h2>
+      <div class="steps">
+        <div class="step">
+          <h3>Set Your FTP</h3>
+          <p>Enter your Functional Threshold Power once. All workout intensities are based on this number.</p>
+        </div>
+        <div class="step">
+          <h3>Build a Workout</h3>
+          <p>Add steady, ramp, and repeat steps using %FTP. Save it to your local workout library.</p>
+        </div>
+        <div class="step">
+          <h3>Connect & Ride</h3>
+          <p>Pair your smart trainer over Bluetooth, hit start, and follow along with real-time feedback.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      &copy; 2026 ERG Workout Builder. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

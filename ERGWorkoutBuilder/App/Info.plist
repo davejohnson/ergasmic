@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>ERGasm</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>ERGasm uses Bluetooth to connect to your smart trainer and heart rate monitor.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>ERGasm reads your health data to provide recovery and training insights.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>ERGasm saves your workout data to Apple Health.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+	</array>
+</dict>
+</plist>
